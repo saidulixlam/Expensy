@@ -62,7 +62,6 @@ const Signup = () => {
             });
 
             if (response.ok) {
-                // const responseData = await response.json();
                 setShowSuccessModal(true);
                 setTimeout(() => {
                     setShowSuccessModal(false);
