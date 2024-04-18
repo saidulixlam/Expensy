@@ -1,4 +1,4 @@
-// const Expense = require("../models/expense");
+const User = require("../models/user");
 
 // exports.getExpenses = async (req, res, next) => {
 //   try {
@@ -10,16 +10,22 @@
 //   }
 // };
 
-// exports.postExpense = async (req, res, next) => {
-//   try {
-//     const { name, description, price } = req.body;
-//     const expense = await Expense.create({ name, description, price });
-//     res.status(201).json(expense);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// };
+exports.createUser = async (req, res, next) => {
+    try {
+      const { name, email, password } = req.body;
+      // Checking  if the user already exists
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ error: "User already exists. Please login instead." });
+      }
+      // Create the user if not already exists
+      const newUser = await User.create({ name, email, password });
+      return res.status(201).json(newUser);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  };
 
 // exports.deleteExpense = async (req, res, next) => {
 //   const id = req.params.id;

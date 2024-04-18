@@ -53,7 +53,7 @@ const Signup = () => {
         console.log(formData);
         
         try {
-            const response = await fetch(`http://localhost:5000/${isLogin ? 'login' : 'signup'}`, {
+            const response = await fetch(`http://localhost:5000/user/${isLogin ? 'login' : 'signup'}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,7 +68,8 @@ const Signup = () => {
                     navigate('/movies');
                 }, 3000);
             } else {
-                setError('Failed to submit form');
+                const responseData = await response.json();
+                setError(responseData.error);
             }
         } catch (error) {
             console.error('Error submitting form:', error.message);
