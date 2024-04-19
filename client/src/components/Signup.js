@@ -19,7 +19,7 @@ const SuccessModal = ({ message, onClose }) => {
         </div>
     );
 };
- 
+
 
 const Signup = () => {
 
@@ -37,21 +37,21 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         let formData;
-        if(!isLogin){
+        if (!isLogin) {
             formData = {
                 name: nameRef.current.value,
                 email: emailRef.current.value,
                 password: passwordRef.current.value,
             };
-        }else{
+        } else {
             formData = {
-                name: nameRef.current.value,
+                email: emailRef.current.value,
                 password: passwordRef.current.value,
             };
         }
-        console.log(formData);
-        
+
         try {
             const response = await fetch(`http://localhost:5000/user/${isLogin ? 'login' : 'signup'}`, {
                 method: 'POST',
@@ -69,14 +69,15 @@ const Signup = () => {
                 }, 3000);
             } else {
                 const responseData = await response.json();
-                setError(responseData.error);
+                setError(responseData.message);
+                
             }
         } catch (error) {
             console.error('Error submitting form:', error.message);
             setError('Error submitting form');
         }
     };
-
+    
     const toggleForm = () => {
         setIsLogin(!isLogin);
         setError('');
@@ -88,30 +89,31 @@ const Signup = () => {
                 {showSuccessModal && <SuccessModal message={`Successfully ${isLogin ? 'Logged In' : 'Signed Up'}`} onClose={handleCloseSuccessModal} />}
                 <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 mt-1">
                     <h2 className="text-3xl font-bold mb-4 text-center">{isLogin ? 'Login' : 'Sign up'}</h2>
-                    <div className="mb-4">
-                        <label htmlFor="name" className="block text-gray-700">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            ref={nameRef}
-                            placeholder="Enter your name"
-                            required
-                            className=" mt-1 p-1 block w-full rounded-sm"
-                        />
-                    </div>
                     {!isLogin && (
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700">Email</label>
+                            <label htmlFor="name" className="block text-gray-700">Name</label>
                             <input
-                                type="email"
-                                id="email"
-                                ref={emailRef}
-                                placeholder="Enter your email"
-                                className="form-input p-1 mt-1 block w-full rounded-sm"
+                                type="text"
+                                id="name"
+                                ref={nameRef}
+                                placeholder="Enter your name"
                                 required
+                                className=" mt-1 p-1 block w-full rounded-sm"
                             />
                         </div>
                     )}
+                    <div className="mb-4">
+                        <label htmlFor="email" className="block text-gray-700">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            ref={emailRef}
+                            placeholder="Enter your email"
+                            className="form-input p-1 mt-1 block w-full rounded-sm"
+                            required
+                        />
+                    </div>
+
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-gray-700">Password</label>
                         <input

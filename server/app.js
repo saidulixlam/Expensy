@@ -11,21 +11,6 @@ app.use(cors());
 
 app.use("/user", userRouter);
 
-
-
-app.post("/login", (req, res) => {
-  // Access form data from req.body
-  const { name, password } = req.body;
-
-  // Log the received data
-  console.log("Received data: 46 line");
-  console.log("Name:", name);
-  console.log("Password:", password);
-
-  // Send a response indicating success
-  res.json({ message: "Login successful!" });
-});
-
 // app.get("/user/login",(req,res)=>{
 //   const { name, password } = req.body;
 
