@@ -3,23 +3,12 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const sequelize = require("./util/db");
 const userRouter = require("./routes/user");
-// Import your models if you have any
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/user", userRouter);
-
-// app.get("/user/login",(req,res)=>{
-//   const { name, password } = req.body;
-
-//   console.log("Received data 67 line: 57 line get ");
-//   console.log("Name:", name);
-//   console.log("Password:", password);
-//   res.json({ message: "Login successful!" });
-// })
-
 
 sequelize
   .sync()

@@ -1,6 +1,6 @@
 const User = require("../models/user");
-
-exports.createUser = async (req, res, next) => {
+const bcrypt = require('bcrypt');
+exports.createUser = async (req, res) => {
     try {
       const { name, email, password } = req.body;
       
@@ -9,7 +9,9 @@ exports.createUser = async (req, res, next) => {
         return res.status(400).json({ error: "User already exists. Please login instead." });
       }
       
-      const newUser = await User.create({ name, email, password });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await User.create({ name, email, password: hashedPassword });
+
       return res.status(201).json(newUser);
     } catch (error) {
       
@@ -29,7 +31,7 @@ exports.createUser = async (req, res, next) => {
         }
 
         // Check if password matches
-        const isPasswordMatch = (password ===user.password);
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
 
         if (!isPasswordMatch) {
             return res.status(401).json({ message: 'Incorrect password' });
