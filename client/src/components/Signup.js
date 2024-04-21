@@ -65,7 +65,7 @@ const Signup = () => {
                 setShowSuccessModal(true);
                 setTimeout(() => {
                     setShowSuccessModal(false);
-                    navigate('/movies');
+                    navigate('/expense');
                 }, 3000);
             } else {
                 const responseData = await response.json();

@@ -1,0 +1,8 @@
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #a54ff5, #fb8afb); /* Violet to Purple, left to right */
+    min-height: 100vh; /* Ensure the gradient covers the entire viewport */
+  }
+  
