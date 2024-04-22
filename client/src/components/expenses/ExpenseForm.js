@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+// import Razorpay from 'razorpay';
 
 const ExpenseForm = () => {
     const amountRef = useRef(null);
@@ -7,12 +8,14 @@ const ExpenseForm = () => {
     const [showForm, setShowForm] = useState(false);
     const [expenses, setExpenses] = useState([]);
 
+    const token = localStorage.getItem('token');
+
     useEffect(() => {
         fetchExpenses();
     }, []);
 
     const fetchExpenses = async () => {
-        const token = localStorage.getItem('token');
+        
         try {
             const response = await fetch('http://localhost:5000/user/expense', {
                 headers: {
@@ -71,6 +74,7 @@ const ExpenseForm = () => {
             const response = await fetch(`http://localhost:5000/user/expense/${id}`, {
                 method: 'DELETE',
                 headers: {
+                    'Authorization': token,
                     'Content-Type': 'application/json'
                 }
             });
@@ -90,8 +94,70 @@ const ExpenseForm = () => {
         setShowForm(!showForm);
     };
 
+    const handlePremiumClick = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/purchase/premium', {
+                method: 'GET',
+                headers: {
+                    'Authorization':token, // Assuming you're storing the token in localStorage
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to upgrade to premium');
+            }
+    
+            // Extract order details and key ID from response
+            const { order, key_id } = await response.json();
+            console.log(order,key_id);
+    
+            // Open Razorpay payment page with the order details
+        //     const rzp = new Razorpay({
+        //         key_id: key_id,
+        //         // You may also want to add other configuration options here
+        //     });
+   
+        //     rzp.open({
+        //         key: key_id,
+        //         amount: order.amount,
+        //         currency: order.currency,
+        //         order_id: order.id,
+        //         description: 'Premium Subscription',
+        //         callback_url:'http://localhost:5000/purchase/premiumStatus',
+        //         handler: function (response) {
+        //             console.log('Payment successful:', response);
+        //             // Handle payment success, e.g., update payment status in the backend
+        //         },
+        //         prefill: {
+        //             name: 'Your Name', // Pre-fill customer's name
+        //             email: 'your.email@example.com', // Pre-fill customer's email
+        //             contact: '1234567890' // Pre-fill customer's contact number
+        //             // You can pre-fill other customer details as needed
+        //         },
+        //         modal: {
+        //             ondismiss: function () {
+        //                 console.log('Payment canceled');
+        //                 // Handle payment cancellation
+        //             }
+        //         }
+        //     });
+        
+        } catch (error) {
+            console.error('Error handling premium click:', error.message);
+            // Handle error
+        }
+    };
+    
     return (
         <div className="mt-8 p-4">
+            <button
+            id='rzp-btn'
+        className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
+        onClick={handlePremiumClick}
+    >
+        Premium
+    </button>
             <div className='max-w-lg mx-auto'>
                 <button
                     className="rounded-lg shadow-lg mb-4 w-full  hover:bg-purple-500 bg-violet-700 text-white font-bold p-3 focus:outline-none focus:shadow-outline"
@@ -162,7 +228,7 @@ const ExpenseForm = () => {
                     <h1 className='text-center font-bold text-3xl'>Expenses are here!</h1>
                 </div>
                 {expenses.map((expense) => (
-                    <div key={expense.id} className="relative bg-purple-300 p-4 rounded-md shadow-lg">
+                    <div key={expense.id} className="relative bg-purple-300 px-5 py-3 rounded-md shadow-lg">
                         <div className="flex justify-between items-center mb-2">
                             <p className="text-lg font-semibold">Amount : <span className="text-green-600">{expense.amount} Rs.</span></p>
                             <button

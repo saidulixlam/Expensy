@@ -29,8 +29,9 @@ exports.deleteExpense = async (req, res) => {
 
   try {
     const { id } = req.params;
-    console.log(id);
-    const deletedExpense = await Expense.destroy({ where: { id } });
+    const userId = req.user.id;
+    
+    const deletedExpense = await Expense.destroy({ where: { id,userId } });
 
     if (!deletedExpense) {
       return res.status(404).json({ message: 'Expense not found' });
