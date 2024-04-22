@@ -12,8 +12,14 @@ const ExpenseForm = () => {
     }, []);
 
     const fetchExpenses = async () => {
+        const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:5000/user/expense');
+            const response = await fetch('http://localhost:5000/user/expense', {
+                headers: {
+                    'Authorization': token
+                }
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to fetch expenses');
             }
@@ -24,8 +30,10 @@ const ExpenseForm = () => {
         }
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
         const formData = {
             amount: amountRef.current.value,
             description: descriptionRef.current.value,
@@ -36,6 +44,7 @@ const ExpenseForm = () => {
             const response = await fetch('http://localhost:5000/user/expense', {
                 method: 'POST',
                 headers: {
+                    'Authorization': token, 
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
@@ -44,6 +53,7 @@ const ExpenseForm = () => {
             if (!response.ok) {
                 throw new Error('Failed to add expense');
             }
+
 
             amountRef.current.value = '';
             descriptionRef.current.value = '';
@@ -161,16 +171,17 @@ const ExpenseForm = () => {
                                 X
                             </button>
                         </div>
-                        <div className="mb-2">
+                        <div>
+                            <p className="text-md">Category: <span className="text-blue-600">{expense.category}</span></p>
+                        </div>
+                        <div className="my-2">
                             <p className="text-md">Description :&nbsp;
                                 <span className='text-gray-500'>
                                     {expense.description}
                                 </span>
                             </p>
                         </div>
-                        <div>
-                            <p className="text-sm">Category: <span className="text-blue-600">{expense.category}</span></p>
-                        </div>
+
                     </div>
 
                 ))}

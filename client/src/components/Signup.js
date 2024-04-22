@@ -62,22 +62,25 @@ const Signup = () => {
             });
 
             if (response.ok) {
+                const data = await response.json();
+                const token = data.token;
+                localStorage.setItem('token', token);
                 setShowSuccessModal(true);
                 setTimeout(() => {
-                    setShowSuccessModal(false);
                     navigate('/expense');
-                }, 3000);
+                    setShowSuccessModal(false);
+                }, 2000);
             } else {
                 const responseData = await response.json();
                 setError(responseData.message);
-                
+
             }
         } catch (error) {
             console.error('Error submitting form:', error.message);
             setError('Error submitting form');
         }
     };
-    
+
     const toggleForm = () => {
         setIsLogin(!isLogin);
         setError('');
