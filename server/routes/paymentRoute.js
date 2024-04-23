@@ -6,6 +6,6 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 router.get('/premium', auth.authenticate, paymentController.purchasePremium);
-// router.post('/status', auth.authenticate, paymentController.purchaseStatus);
+router.post('/status', auth.authenticate, paymentController.premiumStatus);
 
 module.exports = router;

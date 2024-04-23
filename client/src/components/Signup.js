@@ -72,6 +72,7 @@ const Signup = () => {
                 }, 2000);
             } else {
                 const responseData = await response.json();
+                console.log(responseData);
                 setError(responseData.message);
 
             }

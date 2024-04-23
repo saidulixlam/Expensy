@@ -15,7 +15,7 @@ const ExpenseForm = () => {
     }, []);
 
     const fetchExpenses = async () => {
-        
+
         try {
             const response = await fetch('http://localhost:5000/user/expense', {
                 headers: {
@@ -47,7 +47,7 @@ const ExpenseForm = () => {
             const response = await fetch('http://localhost:5000/user/expense', {
                 method: 'POST',
                 headers: {
-                    'Authorization': token, 
+                    'Authorization': token,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
@@ -94,70 +94,91 @@ const ExpenseForm = () => {
         setShowForm(!showForm);
     };
 
-    const handlePremiumClick = async () => {
+    const handlePremiumClick = async (e) => {
         try {
             const response = await fetch('http://localhost:5000/purchase/premium', {
                 method: 'GET',
                 headers: {
-                    'Authorization':token, // Assuming you're storing the token in localStorage
+                    'Authorization': token,
                     'Content-Type': 'application/json'
                 }
             });
-    
+
             if (!response.ok) {
                 throw new Error('Failed to upgrade to premium');
             }
-    
-            // Extract order details and key ID from response
-            const { order, key_id } = await response.json();
-            console.log(order,key_id);
-    
-            // Open Razorpay payment page with the order details
-        //     const rzp = new Razorpay({
-        //         key_id: key_id,
-        //         // You may also want to add other configuration options here
-        //     });
-   
-        //     rzp.open({
-        //         key: key_id,
-        //         amount: order.amount,
-        //         currency: order.currency,
-        //         order_id: order.id,
-        //         description: 'Premium Subscription',
-        //         callback_url:'http://localhost:5000/purchase/premiumStatus',
-        //         handler: function (response) {
-        //             console.log('Payment successful:', response);
-        //             // Handle payment success, e.g., update payment status in the backend
-        //         },
-        //         prefill: {
-        //             name: 'Your Name', // Pre-fill customer's name
-        //             email: 'your.email@example.com', // Pre-fill customer's email
-        //             contact: '1234567890' // Pre-fill customer's contact number
-        //             // You can pre-fill other customer details as needed
-        //         },
-        //         modal: {
-        //             ondismiss: function () {
-        //                 console.log('Payment canceled');
-        //                 // Handle payment cancellation
-        //             }
-        //         }
-        //     });
-        
+
+            const order = await response.json();
+            console.log(order);
+
+            var options = {
+                "key": order.key_id,
+                "amount": "100",
+                "currency": "INR",
+                "name": "Expenses premium",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.order.id,
+                "handler": async function (response) {
+                     await fetch('http://localhost:5000/purchase/status', {
+
+                        method: 'POST',
+                        headers: {
+                            'Authorization': token,
+                            'Content-Type': 'application/json'
+                        },
+                        body:JSON.stringify({
+                            order_id:options.order_id,
+                            payment_id:response.razorpay_payment_id
+                        })
+                    });
+                    alert("YOU ARE A PREMIUMUM MEMBER NOW");
+                    alert(response.razorpay_payment_id);
+                    alert(response.razorpay_order_id);
+                    alert(response.razorpay_signature)
+                },
+                "prefill": {
+                    "name": "SAIDUL ISLAM",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+            // document.getElementById('rzp-button1').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+            // }
+
         } catch (error) {
             console.error('Error handling premium click:', error.message);
             // Handle error
         }
     };
-    
+
     return (
         <div className="mt-8 p-4">
             <button
-            id='rzp-btn'
-        className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
-        onClick={handlePremiumClick}
-    >
-        Premium
-    </button>
+                id='rzp-button1'
+                className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
+                onClick={handlePremiumClick}
+            >
+                Premium
+            </button>
             <div className='max-w-lg mx-auto'>
                 <button
                     className="rounded-lg shadow-lg mb-4 w-full  hover:bg-purple-500 bg-violet-700 text-white font-bold p-3 focus:outline-none focus:shadow-outline"
@@ -167,7 +188,7 @@ const ExpenseForm = () => {
                     {showForm ? 'X' : 'Add Expense'}
                 </button>
                 {showForm && (
-                    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4">
+                    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-md p-5  mb-4">
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="amount">
                                 Amount Spent
