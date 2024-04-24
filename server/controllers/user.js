@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 exports.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log("name , email ", name, email, password);
+    const premium = false;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -13,7 +13,7 @@ exports.createUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await User.create({ name, email, password: hashedPassword });
+    const newUser = await User.create({ name, email, password: hashedPassword ,premium });
     const token = jwt.sign({ userId: newUser.id }, 'saidulSecretKey');
     res.status(200).json({ message: 'signup succesfull', newUser, token });
   } catch (error) {
@@ -37,7 +37,8 @@ exports.getUser = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.id }, 'saidulSecretKey');
-    res.status(200).json({ message: 'Login successful', token });
+    const premium = user.premium;
+    res.status(200).json({ message: 'Login successful', token ,premium});
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Internal server error', error });

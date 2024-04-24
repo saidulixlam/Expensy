@@ -36,30 +36,39 @@ exports.purchasePremium = async (req, res) => {
 };
 
 exports.premiumStatus = async (req, res) => {
-    // Log the request body
+    
     console.log(req.body);
 
-    // Extract order_id, payment_id, and user_id from the request body
-    const { order_id, payment_id, user_id } = req.body;
+   
+    const { order_id, payment_id } = req.body;
+    const userId = req.user.id;
 
     try {
         // Update the order to mark it as paid
-        const updatedOrder = await Order.findOneAndUpdate(
-            { _id: order_id, status: 'pending' },
-            { $set: { status: 'success', paymentId: payment_id } },
-            { new: true }
-        );
+        const updatedOrder = await Order.findOne({
+            where: {
+                orderId: order_id,
+                status: 'PENDING'
+            }
+        });
 
         if (!updatedOrder) {
             return res.status(404).json({ error: 'Order not found or already processed.' });
         }
 
+        updatedOrder.status = 'SUCCESS';
+        updatedOrder.paymentId = payment_id;
+        await updatedOrder.save();
+
         // Update the user to mark them as premium
-        const updatedUser = await User.findOneAndUpdate(
-            { _id: user_id },
-            { $set: { premium: true } },
-            { new: true }
-        );
+        const updatedUser = await User.findByPk(userId);
+        console.log(updatedUser);
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        updatedUser.premium = true;
+        await updatedUser.save();
 
         res.status(200).json({
             message: 'Payment completed successfully.',

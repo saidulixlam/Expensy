@@ -18,8 +18,8 @@ app.use("/user", userRouter);
 app.use("/user",expenseRouter);
 app.use("/purchase",paymentRouter);
 
-User.hasMany(Expense);
-Expense.belongsTo(User);
+// User.hasMany(Expense);
+// Expense.belongsTo(User);
 
 // User.hasMany(Order);
 // Order.belongsTo(User);

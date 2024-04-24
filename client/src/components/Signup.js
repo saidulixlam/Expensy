@@ -64,7 +64,10 @@ const Signup = () => {
             if (response.ok) {
                 const data = await response.json();
                 const token = data.token;
+                const premium = data.premium;
+                console.log(premium);
                 localStorage.setItem('token', token);
+                localStorage.setItem('premium',premium);
                 setShowSuccessModal(true);
                 setTimeout(() => {
                     navigate('/expense');

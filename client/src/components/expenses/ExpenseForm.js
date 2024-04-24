@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-// import Razorpay from 'razorpay';
 
 const ExpenseForm = () => {
     const amountRef = useRef(null);
@@ -7,10 +6,14 @@ const ExpenseForm = () => {
     const categoryRef = useRef(null);
     const [showForm, setShowForm] = useState(false);
     const [expenses, setExpenses] = useState([]);
-
+    const [userPremium, setUserPremium] = useState(false);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
+        const storedPremium = localStorage.getItem('premium');
+
+        setUserPremium(storedPremium === 'true');
+        
         fetchExpenses();
     }, []);
 
@@ -32,7 +35,6 @@ const ExpenseForm = () => {
             console.error('Error fetching expenses:', error.message);
         }
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,7 +91,6 @@ const ExpenseForm = () => {
         }
     };
 
-
     const toggleForm = () => {
         setShowForm(!showForm);
     };
@@ -120,22 +121,22 @@ const ExpenseForm = () => {
                 "image": "https://example.com/your_logo",
                 "order_id": order.order.id,
                 "handler": async function (response) {
-                     await fetch('http://localhost:5000/purchase/status', {
+                    const res = await fetch('http://localhost:5000/purchase/status', {
 
                         method: 'POST',
                         headers: {
                             'Authorization': token,
                             'Content-Type': 'application/json'
                         },
-                        body:JSON.stringify({
-                            order_id:options.order_id,
-                            payment_id:response.razorpay_payment_id
+                        body: JSON.stringify({
+                            order_id: options.order_id,
+                            payment_id: response.razorpay_payment_id
                         })
                     });
                     alert("YOU ARE A PREMIUMUM MEMBER NOW");
-                    alert(response.razorpay_payment_id);
-                    alert(response.razorpay_order_id);
-                    alert(response.razorpay_signature)
+                    const data = await res.json();
+                    console.log(data);
+
                 },
                 "prefill": {
                     "name": "SAIDUL ISLAM",
@@ -172,13 +173,20 @@ const ExpenseForm = () => {
 
     return (
         <div className="mt-8 p-4">
-            <button
+            {!userPremium && <button
                 id='rzp-button1'
                 className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
                 onClick={handlePremiumClick}
             >
                 Premium
-            </button>
+            </button>}
+            {userPremium && <button
+                id='rzp-button1'
+                className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
+                onClick={handlePremiumClick}
+            >
+                You are a premium user
+            </button>}
             <div className='max-w-lg mx-auto'>
                 <button
                     className="rounded-lg shadow-lg mb-4 w-full  hover:bg-purple-500 bg-violet-700 text-white font-bold p-3 focus:outline-none focus:shadow-outline"

@@ -1,5 +1,6 @@
 const { where } = require("sequelize");
 const Expense = require("../models/expense");
+
 exports.createExpense = async (req, res) => {
   const userId = req.user.id;
   try {
