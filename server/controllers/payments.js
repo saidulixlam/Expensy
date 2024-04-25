@@ -37,14 +37,10 @@ exports.purchasePremium = async (req, res) => {
 
 exports.premiumStatus = async (req, res) => {
     
-    console.log(req.body);
-
-   
     const { order_id, payment_id } = req.body;
     const userId = req.user.id;
 
     try {
-        // Update the order to mark it as paid
         const updatedOrder = await Order.findOne({
             where: {
                 orderId: order_id,

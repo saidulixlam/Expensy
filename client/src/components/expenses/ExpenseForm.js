@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import LeaderBoard from '../premium/LeaderBord';
 
 const ExpenseForm = () => {
     const amountRef = useRef(null);
@@ -31,10 +32,15 @@ const ExpenseForm = () => {
             }
             const data = await response.json();
             setExpenses(data);
+            
         } catch (error) {
             console.error('Error fetching expenses:', error.message);
         }
     };
+
+    const handleExpenseChange = () => {
+        
+      }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -110,7 +116,6 @@ const ExpenseForm = () => {
             }
 
             const order = await response.json();
-            console.log(order);
 
             var options = {
                 "key": order.key_id,
@@ -135,8 +140,9 @@ const ExpenseForm = () => {
                     });
                     alert("YOU ARE A PREMIUMUM MEMBER NOW");
                     const data = await res.json();
-                    console.log(data);
-
+                    const premium=data.user.premium;
+                    localStorage.setItem('premium',premium);
+                    setUserPremium(true);
                 },
                 "prefill": {
                     "name": "SAIDUL ISLAM",
@@ -183,7 +189,7 @@ const ExpenseForm = () => {
             {userPremium && <button
                 id='rzp-button1'
                 className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
-                onClick={handlePremiumClick}
+                
             >
                 You are a premium user
             </button>}
@@ -280,6 +286,9 @@ const ExpenseForm = () => {
                     </div>
 
                 ))}
+            </div>
+            <div>
+            <LeaderBoard onExpenseChange={handleExpenseChange} />
             </div>
         </div>
     );

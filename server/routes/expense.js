@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/expense', auth.authenticate, expenseController.createExpense);
 router.get('/expense', auth.authenticate, expenseController.getExpenses);
+router.get('/expenses', auth.authenticate, expenseController.getAllExpenses);
 router.delete('/expense/:id', auth.authenticate,expenseController.deleteExpense);
 
 module.exports = router;

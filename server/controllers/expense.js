@@ -1,5 +1,6 @@
 const { where } = require("sequelize");
 const Expense = require("../models/expense");
+const User = require("../models/user");
 
 exports.createExpense = async (req, res) => {
   const userId = req.user.id;
@@ -22,6 +23,33 @@ exports.getExpenses = async (req, res) => {
     return res.status(200).json(expenses);
   } catch (error) {
     console.error('Error fetching expenses:', error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.getAllExpenses = async (req, res) => {
+  try {
+    const usersWithExpenses = await User.findAll({
+      // Include expenses for each user
+      include: Expense 
+    });
+
+    // Map user data and expenses
+    const userDataWithExpenses = usersWithExpenses.map(user => ({
+      id: user.id,
+      name: user.name,
+      expenses: user.expenses.map(expense => ({
+        id: expense.id,
+        amount: expense.amount,
+        description: expense.description,
+        category: expense.category
+      }))
+    }));
+
+    // Sending data the mapped data to the frontend
+    return res.status(200).json(userDataWithExpenses);
+  } catch (error) {
+    console.error('Error fetching user data with expenses:', error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
