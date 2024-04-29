@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const LeaderBoard = () => {
+const LeaderBoard = (onExpenseChange) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -9,7 +9,7 @@ const LeaderBoard = () => {
 
     useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [onExpenseChange]);
 
     const fetchUserData = async () => {
         setLoading(true);
@@ -68,7 +68,7 @@ const LeaderBoard = () => {
                     ))}
                 </tbody>
             </table>
-            <style jsx>{`
+            {/* <style jsx>{`
                 @keyframes shake {
                     0% { transform: translateX(0); }
                     25% { transform: translateX(-5px); }
@@ -79,7 +79,7 @@ const LeaderBoard = () => {
                 .animate-shake {
                     animation: shake 0.8s;
                 }
-            `}</style>
+            `}</style> */}
         </div>
     );
 };

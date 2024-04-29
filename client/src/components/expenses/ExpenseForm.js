@@ -14,7 +14,7 @@ const ExpenseForm = () => {
         const storedPremium = localStorage.getItem('premium');
 
         setUserPremium(storedPremium === 'true');
-        
+
         fetchExpenses();
     }, []);
 
@@ -32,15 +32,15 @@ const ExpenseForm = () => {
             }
             const data = await response.json();
             setExpenses(data);
-            
+
         } catch (error) {
             console.error('Error fetching expenses:', error.message);
         }
     };
 
     const handleExpenseChange = () => {
-        
-      }
+
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -140,8 +140,8 @@ const ExpenseForm = () => {
                     });
                     alert("YOU ARE A PREMIUMUM MEMBER NOW");
                     const data = await res.json();
-                    const premium=data.user.premium;
-                    localStorage.setItem('premium',premium);
+                    const premium = data.user.premium;
+                    localStorage.setItem('premium', premium);
                     setUserPremium(true);
                 },
                 "prefill": {
@@ -189,7 +189,7 @@ const ExpenseForm = () => {
             {userPremium && <button
                 id='rzp-button1'
                 className="fixed bottom-2 right-4 bg-white bg-opacity-50 text-black text-sm px-4 py-2 rounded-md"
-                
+
             >
                 You are a premium user
             </button>}
@@ -275,9 +275,9 @@ const ExpenseForm = () => {
                         <div>
                             <p className="text-md">Category: <span className="text-blue-600">{expense.category}</span></p>
                         </div>
-                        <div className="my-2">
+                        <div className="my-2 overflow-hidden">
                             <p className="text-md">Description :&nbsp;
-                                <span className='text-gray-500'>
+                                <span className='text-gray-500 text-left whitespace-normal'>
                                     {expense.description}
                                 </span>
                             </p>
@@ -288,7 +288,7 @@ const ExpenseForm = () => {
                 ))}
             </div>
             <div>
-            <LeaderBoard onExpenseChange={handleExpenseChange} />
+                {userPremium && <LeaderBoard onExpenseChange={handleExpenseChange} />}
             </div>
         </div>
     );
