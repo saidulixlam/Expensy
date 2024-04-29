@@ -188,7 +188,7 @@ const ExpenseForm = () => {
             </button>}
             {userPremium && <button
                 id='rzp-button1'
-                className="fixed bottom-2 right-4 bg-yellow-500 text-black text-sm px-4 py-2 rounded-md"
+                className="fixed bottom-2 right-4 bg-white bg-opacity-50 text-black text-sm px-4 py-2 rounded-md"
                 
             >
                 You are a premium user

@@ -33,7 +33,7 @@ exports.getAllExpenses = async (req, res) => {
       // Include expenses for each user
       include: Expense 
     });
-
+    
     // Map user data and expenses
     const userDataWithExpenses = usersWithExpenses.map(user => ({
       id: user.id,

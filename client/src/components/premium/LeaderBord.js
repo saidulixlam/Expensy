@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-const LeaderBoard = (onExpenseChange) => {
+const LeaderBoard = () => {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
     const token = localStorage.getItem('token');
+
     useEffect(() => {
-        
         fetchUserData();
-    }, [onExpenseChange]);
+    }, []);
 
     const fetchUserData = async () => {
+        setLoading(true);
         try {
             const response = await fetch('http://localhost:5000/user/expenses', {
                 headers: {
@@ -20,9 +24,7 @@ const LeaderBoard = (onExpenseChange) => {
             }
             const userData = await response.json();
 
-            // Calculate total expenses for each user
             const usersWithTotalExpenses = userData.map(user => {
-                // Calculate total expenses for the current user
                 const totalExpenses = user.expenses.reduce((total, expense) => total + expense.amount, 0);
                 return {
                     ...user,
@@ -31,17 +33,25 @@ const LeaderBoard = (onExpenseChange) => {
             });
 
             usersWithTotalExpenses.sort((a, b) => b.totalExpenses - a.totalExpenses);
-
-            // Set the state with sorted user data
             setUsers(usersWithTotalExpenses);
+            setError('');
         } catch (error) {
+            setError('Failed to fetch user data. Please try again later.');
             console.error('Error fetching user data:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className='bg-purple-300 px-5 py-3 rounded-md shadow-lg my-4'>
             <h2>Leaderboard</h2>
+            {loading && <p>Loading...</p>}
+            {error && (
+                <p className="text-red-600 animate-shake">
+                    {error}
+                </p>
+            )}
             <table>
                 <thead>
                     <tr>
@@ -58,6 +68,18 @@ const LeaderBoard = (onExpenseChange) => {
                     ))}
                 </tbody>
             </table>
+            <style jsx>{`
+                @keyframes shake {
+                    0% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    50% { transform: translateX(5px); }
+                    75% { transform: translateX(-5px); }
+                    100% { transform: translateX(0); }
+                }
+                .animate-shake {
+                    animation: shake 0.8s;
+                }
+            `}</style>
         </div>
     );
 };
