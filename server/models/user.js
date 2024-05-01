@@ -17,7 +17,7 @@ const User = sequelize.define("user", {
     },
      premium: {
         type: DataTypes.BOOLEAN,
-    }
+    },
 });
 
 module.exports = User;

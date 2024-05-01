@@ -66,7 +66,7 @@ const Signup = () => {
                 const token = data.token;
                 const premium = data.premium;
                 localStorage.setItem('token', token);
-                localStorage.setItem('premium',premium);
+                localStorage.setItem('premium', premium);
                 setShowSuccessModal(true);
                 setTimeout(() => {
                     navigate('/expense');
@@ -88,12 +88,15 @@ const Signup = () => {
         setIsLogin(!isLogin);
         setError('');
     };
+    const passwordHandler = () => {
+        navigate('forget-passowrd');
+    }
 
     return (
         <div className="h-screen flex justify-center items-center">
             <div className="lg:w-1/3 sm:w-3/4 md:w-1/3 bg-gray-100 shadow-md p-5 rounded-md relative">
                 {showSuccessModal && <SuccessModal message={`Successfully ${isLogin ? 'Logged In' : 'Signed Up'}`} onClose={handleCloseSuccessModal} />}
-                <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 mt-1">
+                <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-1">
                     <h2 className="text-3xl font-bold mb-4 text-center">{isLogin ? 'Login' : 'Sign up'}</h2>
                     {!isLogin && (
                         <div className="mb-4">
@@ -132,10 +135,18 @@ const Signup = () => {
                         />
                     </div>
                     {error && <p className="text-red-500 mb-2 text-center">{error}</p>}
-                    <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-green-600 w-full">{isLogin ? 'Login' : 'Signup'}</button>
-                    <p className="mt-3 text-gray-400 text-center">{isLogin ? "Don't have an account? " : "Already have an account? "}
+                    <button type="submit" className=" bg-blue-500 text-white p-2 rounded hover:bg-green-600 w-full">{isLogin ? 'Login' : 'Signup'}</button>
+                    <p className="mt-4 text-gray-400 text-center">{isLogin ? "Don't have an account? " : "Already have an account? "}
                         <button type="button" className="text-blue-500" onClick={toggleForm}>
                             {isLogin ? 'Signup' : 'Login'}
+                        </button>
+                    </p>
+
+                    <p className="text-center">
+                        <button type="button" className="text-red-500" onClick={passwordHandler}>
+                            <span>
+                                Forget password
+                            </span>
                         </button>
                     </p>
                 </form>
