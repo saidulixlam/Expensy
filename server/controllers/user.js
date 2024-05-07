@@ -64,14 +64,10 @@ exports.forgetPassword = async (req, res) => {
 
     user.resetToken = token;
     await user.save();
-
-
-    // Save the token to the user document
-    user.resetToken = token;
-    await user.save();
-
+    
+    const encryptedEmail = Buffer.from(email).toString('base64');
     // Send reset password link to user's email
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const resetLink = `http://localhost:3000/reset-password/${encodeURIComponent(encryptedEmail)}`;
 
     await sendResetPasswordEmail(email, resetLink);
 
@@ -90,8 +86,8 @@ async function sendResetPasswordEmail(email, resetLink) {
       host: 'smtp.ethereal.email',
       port: 587,
       auth: {
-          user: 'amaya.green76@ethereal.email',
-          pass: 'ZcQ4mP4UvV1XK6TGzv'
+          user: 'lou36@ethereal.email',
+          pass: 'Ck1rFDZDUu99rEgbYy'
       }
   });
 
@@ -114,13 +110,14 @@ async function sendResetPasswordEmail(email, resetLink) {
 }
 
 exports.resetPassword = async (req, res) => {
-console.log("i am reset");
-  const { password,email } = req.body;
+  console.log("reset passowrd :   :  :  : : ",req.body);
+  const { password,token } = req.body;
   
-
   try {
     // Find the user by reset token
-    const user = await User.findOne({ where: { email } });
+    const decryptedEmail = Buffer.from(token, 'base64').toString('ascii');
+    console.log(decryptedEmail);
+    const user = await User.findOne({ where: { email:decryptedEmail } });
     console.log(user);
 
     if (!user) {
