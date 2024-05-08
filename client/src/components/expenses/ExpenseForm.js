@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import LeaderBoard from '../premium/LeaderBord';
+import { useNavigate } from 'react-router-dom';
 
 const ExpenseForm = () => {
     const amountRef = useRef(null);
@@ -9,6 +10,7 @@ const ExpenseForm = () => {
     const [expenses, setExpenses] = useState([]);
     const [userPremium, setUserPremium] = useState(false);
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedPremium = localStorage.getItem('premium');
@@ -32,15 +34,16 @@ const ExpenseForm = () => {
             }
             const data = await response.json();
             setExpenses(data);
+            console.log(data);
 
         } catch (error) {
             console.error('Error fetching expenses:', error.message);
         }
     };
 
-    const handleExpenseChange = () => {
-
-    }
+    // const handleExpenseChange = () => {
+    //     console.log('expenses');
+    // }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -100,6 +103,10 @@ const ExpenseForm = () => {
     const toggleForm = () => {
         setShowForm(!showForm);
     };
+
+    const handlePremium = ()=>{
+        navigate('/premium');
+    }
 
     const handlePremiumClick = async (e) => {
         try {
@@ -187,11 +194,12 @@ const ExpenseForm = () => {
                 Premium
             </button>}
             {userPremium && <button
+            onClick={handlePremium}
                 id='rzp-button1'
                 className="fixed bottom-2 right-4 bg-white bg-opacity-50 text-black text-sm px-4 py-2 rounded-md"
 
             >
-                You are a premium user
+                Premium features for you...
             </button>}
             <div className='max-w-lg mx-auto'>
                 <button
@@ -287,9 +295,9 @@ const ExpenseForm = () => {
 
                 ))}
             </div>
-            <div>
+            {/* <div>
                 {userPremium && <LeaderBoard onExpenseChange={handleExpenseChange} />}
-            </div>
+            </div> */}
         </div>
     );
 };
